@@ -1,0 +1,42 @@
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+.venv/
+venv/
+
+# Data (too large for GitHub)
+backend/data/raw/
+backend/data/processed/
+backend/data/qdrant_storage/
+backend/data/ingested.json
+
+# Temporary scripts
+backend/run_ingestion.py
+backend/run_scraper.py
+
+# Node
+node_modules/
+frontend/dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
