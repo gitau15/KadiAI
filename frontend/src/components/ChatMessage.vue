@@ -1,75 +1,68 @@
 <template>
-  <div
-    class="flex gap-3 message-enter"
-    :class="message.role === 'user' ? 'justify-end' : 'justify-start'"
-  >
-    <!-- Avatar (AI only for assistant, skip for user) -->
-    <div
-      v-if="message.role === 'assistant'"
-      class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-1
-             bg-gradient-to-br from-earth-600 to-terracotta-500 text-white shadow-sm"
-    >
-      K
+  <div class="message-enter">
+    <!-- User message -->
+    <div v-if="message.role === 'user'" class="flex justify-end">
+      <div class="max-w-[75%] bg-surface-100 rounded-2xl rounded-br-md px-5 py-3 text-sm text-surface-800 leading-relaxed">
+        <div class="whitespace-pre-wrap">{{ message.content }}</div>
+      </div>
     </div>
 
-    <!-- Bubble -->
-    <div
-      class="max-w-[80%] rounded-2xl px-5 py-3.5 text-sm leading-relaxed relative group"
-      :class="message.role === 'user'
-        ? 'bg-earth-700 text-white rounded-br-md shadow-sm'
-        : 'bg-white border border-earth-200 text-earth-800 rounded-bl-md shadow-sm'"
-    >
-      <!-- Rendered answer with clickable citations -->
-      <div v-if="message.role === 'assistant'" class="assistant-content" v-html="renderedContent"></div>
-      <div v-else class="whitespace-pre-wrap">{{ message.content }}</div>
-
-      <!-- Timestamp and actions -->
-      <div class="flex items-center justify-between mt-2 gap-2"
-           :class="message.role === 'user' ? 'text-earth-300' : 'text-earth-400'">
-        <span class="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">
-          {{ formatTime(message.timestamp) }}
-        </span>
-        <button
-          v-if="message.role === 'assistant'"
-          @click="copyAnswer"
-          class="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity hover:underline text-earth-400"
-        >
-          {{ copied ? 'Copied!' : 'Copy' }}
-        </button>
+    <!-- Assistant message -->
+    <div v-else class="flex gap-3 items-start">
+      <!-- AI avatar -->
+      <div class="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-green-600 text-white mt-0.5">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+        </svg>
       </div>
 
-      <!-- Citation badges -->
-      <div v-if="message.citations && message.citations.length"
-           class="mt-3 pt-3 border-t"
-           :class="message.role === 'user' ? 'border-earth-600' : 'border-earth-100'">
-        <p class="text-xs text-earth-500 mb-2 font-medium flex items-center gap-1">
-          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-          </svg>
-          Sources
-        </p>
-        <div class="flex flex-wrap gap-1.5">
+      <!-- Content -->
+      <div class="flex-1 min-w-0">
+        <!-- Rendered answer -->
+        <div class="text-sm text-surface-700 leading-relaxed assistant-content" v-html="renderedContent"></div>
+
+        <!-- Actions row -->
+        <div class="flex items-center gap-3 mt-3">
+          <!-- Copy button -->
           <button
-            v-for="(cit, i) in message.citations"
-            :key="i"
-            @click="$emit('citationClick', cit)"
-            class="text-xs px-2.5 py-1.5 bg-sand-100 text-earth-700 rounded-lg border border-earth-100
-                   hover:bg-earth-100 hover:border-earth-200 transition-all text-left max-w-[240px] truncate"
+            @click="copyAnswer"
+            class="inline-flex items-center gap-1 text-xs text-surface-400 hover:text-green-600 transition-colors"
           >
-            <span class="font-medium">{{ cleanDocName(cit.document) }}</span>
-            <span v-if="cit.section" class="text-earth-500"> · {{ cit.section }}</span>
+            <svg v-if="!copied" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+            </svg>
+            <svg v-else class="w-3.5 h-3.5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            <span>{{ copied ? 'Copied' : 'Copy' }}</span>
           </button>
+
+          <!-- Timestamp -->
+          <span class="text-[10px] text-surface-300">{{ formatTime(message.timestamp) }}</span>
+        </div>
+
+        <!-- Citation badges -->
+        <div v-if="message.citations && message.citations.length" class="mt-3 pt-3 border-t border-surface-100">
+          <p class="text-[11px] text-surface-400 mb-2 font-medium uppercase tracking-wider flex items-center gap-1">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            Sources
+          </p>
+          <div class="flex flex-wrap gap-1.5">
+            <button
+              v-for="(cit, i) in message.citations"
+              :key="i"
+              @click="$emit('citationClick', cit)"
+              class="text-xs px-2.5 py-1.5 bg-green-50 text-green-700 rounded-lg border border-green-100
+                     hover:bg-green-100 hover:border-green-200 transition-all text-left max-w-[240px] truncate"
+            >
+              <span class="font-medium">{{ cleanDocName(cit.document) }}</span>
+              <span v-if="cit.section" class="text-green-500"> · {{ cit.section }}</span>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-
-    <!-- User avatar -->
-    <div
-      v-if="message.role === 'user'"
-      class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-1
-             bg-earth-200 text-earth-700"
-    >
-      You
     </div>
   </div>
 </template>
@@ -113,13 +106,13 @@ const renderedContent = computed(() => {
   // Bold: **text**
   text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
 
-  // Numbered lists: "1. " at start of line
-  text = text.replace(/^(\d+)\.\s/gm, '<span class="text-terracotta-500 font-semibold">$1.</span> ')
+  // Numbered lists
+  text = text.replace(/^(\d+)\.\s/gm, '<span class="text-green-600 font-semibold">$1.</span> ')
 
   // Highlight citation patterns: [Source: ...]
   text = text.replace(
     /\[Source:\s*([^\]]+)\]/g,
-    '<span class="inline-flex items-center gap-1 text-earth-600 font-medium text-xs bg-sand-100 border border-earth-100 px-2 py-0.5 rounded-md my-1">📄 $1</span>'
+    '<span class="inline-flex items-center gap-1 text-green-700 font-medium text-xs bg-green-50 border border-green-100 px-2 py-0.5 rounded-md my-1">📄 $1</span>'
   )
 
   // Line breaks
@@ -132,18 +125,10 @@ const renderedContent = computed(() => {
 </script>
 
 <style scoped>
-.message-enter {
-  animation: msg-in 0.3s ease-out;
-}
-@keyframes msg-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 .assistant-content :deep(p) {
   margin: 0;
 }
 .assistant-content :deep(strong) {
-  @apply text-earth-900 font-semibold;
+  @apply text-surface-800 font-semibold;
 }
 </style>

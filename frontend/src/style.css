@@ -2,8 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 body {
-  @apply bg-sand-100 min-h-screen;
+  @apply bg-white text-surface-800 antialiased;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-surface-200 rounded-full;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-surface-300;
 }
 
 /* Thinking dots animation */
@@ -23,4 +39,13 @@ body {
     transform: scale(1);
     opacity: 1;
   }
+}
+
+/* Smooth transitions for messages */
+.message-enter {
+  animation: msg-in 0.3s ease-out;
+}
+@keyframes msg-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }

@@ -1,96 +1,97 @@
 <template>
-  <div class="max-w-4xl mx-auto px-6 py-6">
-    <div class="flex flex-col h-[calc(100vh-9rem)]">
-      <!-- Messages -->
-      <div class="flex-1 overflow-y-auto space-y-5 mb-4 pr-1" ref="messagesContainer">
-        <!-- Empty state -->
-        <div v-if="chat.messages.length === 0" class="flex items-center justify-center h-full">
-          <div class="text-center max-w-lg">
-            <!-- Logo -->
-            <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-earth-600 to-terracotta-500
-                        flex items-center justify-center shadow-lg shadow-earth-200">
-              <span class="text-3xl font-bold text-white">K</span>
-            </div>
-
-            <h2 class="text-2xl font-bold bg-gradient-to-r from-earth-800 to-terracotta-600 bg-clip-text text-transparent mb-2">KadiAI</h2>
-            <p class="text-sm text-earth-500 mb-8 max-w-sm mx-auto">
-              Your Kenyan election law assistant. Ask about electoral laws, IEBC regulations, political party rules, and election petition case law.
-            </p>
-
-            <!-- Suggested questions -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-left mb-4">
-              <button
-                v-for="(q, i) in displayedQuestions"
-                :key="q"
-                @click="chat.sendQuery(q)"
-                class="group text-sm px-4 py-3 bg-white border border-earth-200 rounded-xl text-earth-700
-                       hover:border-earth-400 hover:bg-earth-50 hover:shadow-sm
-                       transition-all duration-200 text-left flex items-start gap-3"
-                :style="{ animationDelay: `${i * 80}ms` }"
-              >
-                <svg class="w-4 h-4 text-earth-400 mt-0.5 shrink-0 group-hover:text-terracotta-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01"/>
-                </svg>
-                <span class="leading-snug">{{ q }}</span>
-              </button>
-            </div>
-
-            <button
-              @click="shuffleQuestions"
-              class="text-xs text-earth-400 hover:text-earth-600 transition-colors inline-flex items-center gap-1"
-            >
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+  <div class="flex-1 flex flex-col max-w-4xl mx-auto w-full px-6">
+    <!-- Messages area -->
+    <div class="flex-1 overflow-y-auto py-6" ref="messagesContainer">
+      <!-- Empty state -->
+      <div v-if="chat.messages.length === 0" class="flex items-center justify-center h-full">
+        <div class="text-center max-w-2xl w-full">
+          <!-- Logo & greeting -->
+          <div class="mb-10">
+            <div class="w-14 h-14 mx-auto mb-5 rounded-2xl bg-green-600 flex items-center justify-center shadow-lg shadow-green-600/20">
+              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
               </svg>
-              Show different questions
+            </div>
+            <h1 class="text-2xl font-semibold text-surface-800 mb-2">How can I help you today?</h1>
+            <p class="text-sm text-surface-400 max-w-md mx-auto">
+              Ask about Kenyan electoral laws, IEBC regulations, election petitions, and political party rules.
+            </p>
+          </div>
+
+          <!-- Suggested questions -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left max-w-xl mx-auto">
+            <button
+              v-for="(q, i) in displayedQuestions"
+              :key="q"
+              @click="chat.sendQuery(q)"
+              class="group text-sm px-4 py-3.5 bg-surface-50 border border-surface-200 rounded-xl
+                     hover:bg-green-50 hover:border-green-200 hover:text-surface-800
+                     transition-all duration-200 text-left flex items-start gap-3 text-surface-600"
+              :style="{ animationDelay: `${i * 60}ms` }"
+            >
+              <svg class="w-4 h-4 text-surface-300 mt-0.5 shrink-0 group-hover:text-green-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+              </svg>
+              <span class="leading-relaxed">{{ q }}</span>
             </button>
           </div>
+
+          <button
+            @click="shuffleQuestions"
+            class="mt-5 text-xs text-surface-400 hover:text-green-600 transition-colors inline-flex items-center gap-1.5"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+            Show different questions
+          </button>
         </div>
+      </div>
 
-        <!-- Chat messages -->
-        <TransitionGroup name="msg" tag="div" class="space-y-5">
-          <ChatMessage
-            v-for="msg in chat.messages"
-            :key="msg.id"
-            :message="msg"
-            @citation-click="chat.selectCitation"
-          />
-        </TransitionGroup>
+      <!-- Chat messages -->
+      <div v-else class="space-y-6">
+        <ChatMessage
+          v-for="msg in chat.messages"
+          :key="msg.id"
+          :message="msg"
+          @citation-click="chat.selectCitation"
+        />
 
-        <!-- Thinking animation -->
-        <div v-if="chat.loading" class="flex gap-3 justify-start">
-          <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-1
-                      bg-gradient-to-br from-earth-600 to-terracotta-500 text-white shadow-sm">
-            K
+        <!-- Thinking indicator -->
+        <div v-if="chat.loading" class="flex gap-3 items-start">
+          <div class="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-green-600 text-white">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+            </svg>
           </div>
-          <div class="rounded-2xl rounded-bl-md px-5 py-4 bg-white border border-earth-200 shadow-sm max-w-sm">
+          <div class="bg-surface-50 border border-surface-200 rounded-2xl rounded-tl-md px-5 py-3.5 max-w-sm">
             <div class="flex items-center gap-3">
-              <div class="thinking-dots flex gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-earth-400"></span>
-                <span class="w-2 h-2 rounded-full bg-earth-400"></span>
-                <span class="w-2 h-2 rounded-full bg-earth-400"></span>
+              <div class="thinking-dots flex gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
               </div>
-              <span class="text-xs text-earth-500">{{ thinkingText }}</span>
+              <span class="text-xs text-surface-400">{{ thinkingText }}</span>
             </div>
           </div>
         </div>
 
         <!-- Error display -->
         <div v-if="chat.error" class="flex justify-center">
-          <div class="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-2.5 rounded-xl max-w-md">
-            <span class="font-medium">Error:</span> {{ chat.error }}
+          <div class="bg-red-50 border border-red-100 text-red-600 text-sm px-4 py-2.5 rounded-xl max-w-md">
+            {{ chat.error }}
           </div>
         </div>
       </div>
-
-      <!-- Input -->
-      <ChatInput
-        :loading="chat.loading"
-        :has-messages="chat.messages.length > 0"
-        @send="chat.sendQuery"
-        @clear="chat.clearChat"
-      />
     </div>
+
+    <!-- Input -->
+    <ChatInput
+      :loading="chat.loading"
+      :has-messages="chat.messages.length > 0"
+      @send="chat.sendQuery"
+      @clear="chat.clearChat"
+    />
 
     <!-- Citation popover -->
     <CitationPopover
@@ -102,7 +103,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, nextTick, computed } from 'vue'
+import { ref, watch, nextTick } from 'vue'
 import { useChatStore } from '@/stores/chat'
 import ChatMessage from '@/components/ChatMessage.vue'
 import ChatInput from '@/components/ChatInput.vue'
@@ -148,7 +149,6 @@ function shuffleQuestions() {
   displayedQuestions.value = shuffled.slice(0, 4)
 }
 
-// Initial shuffle
 shuffleQuestions()
 
 // Rotating thinking text
@@ -190,13 +190,3 @@ watch(
   },
 )
 </script>
-
-<style scoped>
-.msg-enter-active {
-  transition: all 0.3s ease-out;
-}
-.msg-enter-from {
-  opacity: 0;
-  transform: translateY(8px);
-}
-</style>
