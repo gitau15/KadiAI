@@ -32,8 +32,7 @@
         <button
           v-if="message.role === 'assistant'"
           @click="copyAnswer"
-          class="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity hover:underline"
-          :class="message.role === 'user' ? 'text-earth-300' : 'text-earth-400'"
+          class="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity hover:underline text-earth-400"
         >
           {{ copied ? 'Copied!' : 'Copy' }}
         </button>
